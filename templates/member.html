@@ -1,0 +1,191 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+{{ member_obj1.caption }}
+{% endblock %}
+{% block css %}
+    <style>
+    .moda-text{
+        font-size: larger;
+        margin-top: 10px;
+        margin-left: 20px;
+    }
+    #moda{
+        height: 20%;
+    }
+    td{
+border-bottom:1px solid red;
+}
+table{
+   border-collapse:collapse;
+
+}
+    </style>
+
+{% endblock %}
+    {% block head %}
+        <i class="fa fa-th-list fa-fw"></i>&nbsp;{{ member_obj1.caption }}列表
+        {% endblock %}
+{% block left_content %}
+    {% if user_permission > 5  %}
+        <a href="/upload.html"><i class="fa fa-folder fa-fw"></i>&nbsp;上传页面</a>
+    {% endif %}
+    {% endblock %}
+{% block content %}
+    <div id="moda" class="moda hide">
+    <input type="text" placeholder="" class="moda-text-id hide">
+        <div  class="moda-text"><label>修改文件名为:</label></div>
+
+        <div><input id="moda-text" type="text" placeholder="" class="moda-text"></div>
+        <div class="moda-text">
+            <input style="font-size: larger" type="button" name="confirm" value="确认" id="moda-button" class="moda-button">
+            <input style="font-size: larger" type="button" name="close" value="关闭" id="moda-close-button" class="moda-close-button">
+        </div>
+
+    </div>
+        <div id="shade" class="shade hide" >
+
+    </div>
+    <div class="table-div">
+    <input class="hide" type="text" value="{{ member_obj1.id }}" id="classes_id">
+<table class="detail-table table table-hover">
+
+<tbody>
+{% for l in member_obj %}
+    <tr>
+        <td><a alex="{{ l.id }}" href="/general_view.html/?nid={{ l.id }}">{{ l.caption }}</a></td>
+{#        <td style="width: 200px" class="date-td">12123{{ l.idate|date:'Y年m月d日' }}</td>#}
+        <td style="width: 200px" class="date-td">{{ l.idate }}</td>
+        {% if user_permission > 5 %}
+            <td style="width: 50px"><input style="font-size: large" class="edit btn btn-primary " type="button" value="编辑"></td>
+            <td style="width: 45px"><input style="font-size: large" class="delete btn btn-danger" type="button" value="删除"></td>
+        {% endif %}
+        <td style="width: 200px">上传人:{{ l.author }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+    <div class="pagination">
+        {{ str_pager|safe }}
+    </div>
+    </div>
+
+{% endblock %}
+{% block script %}
+    <script>
+    $(function () {
+        loadselected()
+        bindEdit()
+        removeShade()
+        bindAjax()
+        hermit()
+        delEdit()
+        modaCloseButton()
+    })
+        function loadselected() {
+            var classes_id=$('#classes_id').val()
+            console.log(classes_id)
+            switch (classes_id)
+                {
+                case '1':
+                  $('#member').addClass('active')
+
+                  break;
+                case '2':
+                   $('#moral').addClass('active')
+                  break;
+                case '3':
+                   $('#subject').addClass('active')
+                  break;
+                case '4':
+                   $('#eduAdmin').addClass('active')
+                  break;
+                case '5':
+                   $('#sports').addClass('active')
+                  break;
+                case '6':
+                   $('#affairs').addClass('active')
+                  break;
+                }
+        }
+        function hermit() {
+            $('.right-table-div').addClass('hide')
+        }
+        function bindEdit() {
+            $('.edit').click(function () {
+                $('#moda,#shade').removeClass('hide')
+                var hm=$(this).parent().prev().prev().children().html()
+                var nsid=$(this).parent().prev().prev().children().attr('alex')
+
+                $('.moda-text').prop('placeholder',hm)
+                $('.moda-text-id').prop('id',nsid)
+
+
+            })
+        }
+        function delEdit() {
+            $('.delete').click(function () {
+
+
+                var nsid=$(this).parent().prev().prev().prev().children().attr('alex')
+                $.ajax({
+                      dataType:"json",
+                      url:'/member.html/',
+                      type:'post',
+                      data:{nid:nsid,content:'delete'},
+                      success:function (data) {
+                        if(data=='ok')
+                        {
+
+                            $('a[alex="'+nsid+'"]').parent().parent().remove()
+                            window.location.reload()
+
+                        }
+            }
+        })
+
+
+            })
+        }
+        function modaCloseButton() {
+        $('.moda-close-button').click(function () {
+            $('#moda,#shade').addClass('hide')
+        })
+
+        }
+        function bindAjax() {
+            $('.moda-button').click(function () {
+
+               var nid=$('.moda-text-id').prop('id')
+                console.log(nid)
+
+                var txt_val=$('#moda-text').val()
+                console.log(txt_val)
+                  $.ajax({
+                      dataType:"json",
+                      url:'/member.html/',
+                      type:'post',
+                      data:{nid:nid,content:txt_val},
+                      success:function (data) {
+                        if(data=='ok')
+                        {
+                            console.log(nid)
+{#                            vales=$('a[alex='+nid.toString()+']')#}
+                            vales=$('a[alex="'+nid+'"]').html(txt_val)
+                            $('#moda,#shade').addClass('hide')
+                        }
+            }
+        })
+
+
+            })
+        }
+        function removeShade() {
+        $('#shade').click(function () {
+            $('#moda,#shade').addClass('hide')
+
+        })
+
+        }
+    </script>
+{% endblock %}

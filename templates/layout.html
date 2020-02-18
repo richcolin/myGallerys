@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="stylesheet" href="/static/font-awesome-4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <script src="/static/jquery-2.1.4.min.js"></script>
+    <style>
+
+        .shade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: black;
+            opacity: 0.5;
+            z-index: 99;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .moda {
+            height: 600px;
+            width: 500px;
+            background-color: white;
+            top: 50%;
+            left: 50%;
+            position: fixed;
+            margin-top: -300px;
+            margin-left: -250px;
+            z-index: 100;
+        }
+
+        .moda-eidt {
+            height: 600px;
+            width: 500px;
+            background-color: white;
+            top: 50%;
+            left: 50%;
+            position: fixed;
+            margin-top: -300px;
+            margin-left: -250px;
+            z-index: 100;
+
+        }
+
+        .moda-back {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            background-color: cornflowerblue;
+            opacity: 0.3;
+            z-index: 99;
+        }
+
+        .head-bar {
+            background-color: #336699;
+            color: white;
+            height: 100px;
+            background-image: url("/static/imgs/blue.gif");
+            position: relative;
+        {#            background-size: cover;#}
+        }
+
+        .head-bar .head-content {
+            float: right;
+            margin-top: 40px;
+            margin-right: 100px;
+            font-size: 28px;
+            color: white;
+
+        }
+
+        .head-content a {
+            color: white;
+        }
+
+        .left-body {
+            position: absolute;
+            background-image: url("/static/imgs/white2.gif");
+        {#            background-color:#99cccc;#} width: 250px;
+            top: 100px;
+            left: 0px;
+            bottom: 0px;
+            overflow: scroll;
+
+        }
+
+        .left-body a {
+            display: block;
+            height: 60px;
+            line-height:60px;
+            text-align: center;
+            font-size: 24px;
+
+            text-decoration: none;
+
+        }
+
+        .left-body a:hover {
+            background-color: dodgerblue;
+            color: white;
+        }
+
+        .active {
+            background-color: dodgerblue;
+            color: white;
+        }
+
+        .right-body {
+            position: absolute;
+            top: 100px;
+            left: 250px;
+            right: 0px;
+            bottom: 0px;
+            background-image: url("/static/imgs/white2.gif");
+        {#            background-size:100% 90%;#}{#            background-color:#FFFFFF;#} overflow: scroll;
+        }
+
+        #admin {
+            display: none;
+        }
+
+        .a-active {
+            color: red;
+
+        }
+
+        .table-div {
+            position: absolute;
+            left: 7%
+        }
+
+        .right-table-div {
+            position: absolute;
+            left: 12%;
+            font-size: 18px;
+            margin-top: 20px;
+
+        }
+
+        .right-table-div div {
+            margin-bottom: 10px;
+        }
+
+        .right-table-div .sub {
+            width: 60px;
+            height: 30px;
+
+        }
+
+        .detail-table {
+            margin-top: 20px;
+            border-spacing: 10px 10px;
+            font-size: 24px;
+            border-collapse: collapse;
+        }
+
+        .detail-table th {
+            font-size: larger
+        }
+
+        .detail-table td {
+            border-bottom: 1px solid red;
+            width: 600px;
+            vertical-align: bottom;
+        }
+
+        .detail-table tr {
+            height: 50px;
+        }
+
+        .detail-table td a {
+            font-size: 24px;
+            text-decoration: none;
+        }
+
+        .detail-table .date-td {
+            width: 200px;
+        }
+
+        .pagination {
+            padding-top: 20px;
+            position: absolute;
+            display: inline-block;
+            left: 40%;
+            top: 100%;
+        }
+
+        .pagination a {
+            display: inline-block;
+            text-decoration: none;
+            margin-right: 10px;
+            font-size: 24px;
+
+        }
+
+        .pagination a:hover {
+            color: darkblue;
+        }
+    </style>
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+<div class="head-bar">
+
+
+    <div style="font-size: 30px;position: absolute;bottom: 20px;left: 40%">
+        {% block head %}
+        {% endblock %}
+    </div>
+
+    <div class="head-content">
+        <i class="fa fa-user-circle fa-fw"></i>&nbsp;{{ username }} | <a href="/login.html"><i class="fa fa-share fa-fw"></i>&nbsp;注销</a>
+    </div>
+</div>
+<div class="left-body">
+    <div style="height: 20px"></div>
+    <a href="/search.html" id="search"><i class="fa fa-bar-chart fa-fw"></i>&nbsp;筛选列表</a>
+    <a href="/member.html/?nid=1" id="member"><i class="fa fa-book fa-fw"></i>&nbsp;党员学习</a>
+    <a href="/member.html/?nid=2" id="moral"><i class="fa fa-child fa-fw"></i>&nbsp;德育园地</a>
+    <a href="/member.html/?nid=3" id="subject"><i class="fa fa-ravelry fa-fw"></i>&nbsp;教科园地</a>
+    <a href="/member.html/?nid=4" id="eduAdmin"><i class="fa fa-pencil fa-fw"></i>&nbsp;教务资料</a>
+    <a href="/member.html/?nid=5" id="sports"><i class="fa fa-bicycle fa-fw"></i>&nbsp;体育活动</a>
+    <a href="/member.html/?nid=6" id="affairs"><i class="fa fa-cubes fa-fw"></i>&nbsp;总务工作</a>
+    {% block left_content %}
+    {% endblock %}
+
+</div>
+<div class="right-body">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script src="/static/jquery-3.2.1.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+</body>
+<script>
+
+</script>
+{% block script %}
+{% endblock %}
+</html>

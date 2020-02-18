@@ -1,0 +1,126 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    上传页面
+{% endblock %}
+{% block left_content %}
+
+     <a href="/upload.html"><i class="fa fa-folder fa-fw"></i>&nbsp;上传页面</a>
+
+{% endblock %}
+
+
+
+
+
+{% block css %}
+    <style>
+        form div {
+            margin-bottom: 12px;
+        }
+
+        select {
+            font-size: larger;
+        }
+
+        label {
+            font-size: larger;
+        }
+
+        #r_content {
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #r_content div {
+            margin-top: 5px;
+        }
+    </style>
+{% endblock %}
+{% block head %}
+   <i class="fa fa-coffee fa-fw"></i>&nbsp;提示：请将选项仔细填写完整
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div name="r_content" id="r_content" class="col-md-3">
+                <br>
+                <form class="form-group" action="upload.html" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div>
+                        <label for="tims">上传时间</label>
+                        <input name="tims" class="form-control" id="uptime" type="date" id="myDate"
+                               style="font-size: larger">
+                        <label style="color: red">{{ date_warning }}</label>
+                    </div>
+                    <div>
+                        <label for="classes">上传类别</label>
+                        <select name="classes">
+                            {% for foo in classes_obj %}
+
+                                <option value="{{ foo.id }}">{{ foo.caption }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                    <div>
+                        <label for="caption">图片名称</label>
+                        <input class="form-control" type="text" name="caption" id="caption"
+                               style="height: 30px;font-size: larger">
+                        <label style="color: red">{{ warning }}</label>
+                    </div>
+                    <div>
+                        <label for="author">上传人</label>
+                        <input type="text" name="author" id="author" style="height: 30px;font-size: larger">
+                    </div>
+                    <div>
+                        <label for="keyword">关键词</label>
+                        <input class="form-control" type="text" name="keyword" id="keyword">
+                    </div>
+                    <div>
+                        <input style="height: 30px;font-size: larger" id="file" type="file" name="imgFile" multiple>
+                        <p class="help-block">请选择要上传的照片</p>
+                    </div>
+                    <div>
+                        <input class="form-control" style="width:100px;height:40px;font-size: larger" id='subs'
+                               type="submit" value="提交">
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block script %}
+    <script>
+        $(function () {
+            sub()
+            $('.right-table-div').addClass('hide')
+        })
+        function sub() {
+            $('#subs').click(function (event) {
+                var cap_val = $('#caption').val()
+                var file_val = $('#file').val()
+                var uptime = $('#uptime').val()
+
+                if (!cap_val) {
+                    alert('请输入用户名！')
+                    return false
+                }
+                if (!file_val) {
+                    alert('请选择文件！')
+                    return false
+                }
+                if (!uptime) {
+                    alert('请设置上传时间')
+                    return false
+                }
+                return true
+
+            })
+
+        }
+    </script>
+{% endblock %}

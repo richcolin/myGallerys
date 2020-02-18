@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>批量导入客户数据</title>
+</head>
+<body>
+
+<h2>批量导入</h2>
+
+<form action="/download.html/" method="post">
+    <a href="{% url 'crm_download' %}">下载模板</a>
+    <p><input type="file" name="xsfile"></p>
+    <p><input type="submit" value="提交"></p>
+    <input type="submit" value="下载">
+</form>
+
+
+</body>
+</html>

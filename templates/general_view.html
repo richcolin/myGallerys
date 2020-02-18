@@ -1,0 +1,532 @@
+{% extends 'layout.html' %}
+{% block title %}
+{% endblock %}
+
+
+{% block css %}
+    <style>
+
+        .moda .check-box {
+            z-index: 100;
+        }
+
+        .check-box {
+
+        }
+
+        .img-wrap {
+            position: relative;
+            width: 1500px;
+
+            margin-left: 50px;
+            margin-top: 10px;
+
+        }
+
+        .littleImg {
+
+            width: 276px;
+
+            margin-top: 10px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .moda {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 900px;
+            height: 600px;
+            margin-left: -450px;
+            margin-top: -300px;
+            z-index: 100;
+            background-color: rgba(0, 0, 0, 0);
+        {#            overflow:scroll;#}
+
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .pagination {
+            padding-top: 20px;
+            position: absolute;
+            display: inline-block;
+            left: 40%;
+            top: 100%;
+        }
+
+        .pagination a {
+            display: inline-block;
+            text-decoration: none;
+            margin-right: 10px;
+            font-size: 24px;
+
+        }
+
+        .pagination a:hover {
+            color: darkblue;
+        }
+
+        .sel-button {
+            line-height: 80px;
+            color: white;
+            font-size: 50px;
+            text-align: center;
+            position: absolute;
+            background-color: black;
+            opacity: 0.7;
+            height: 80px;
+            width: 60px;
+            top: 50%;
+            margin-top: -40px;
+            cursor: hand;
+            z-index: 13;
+        }
+
+        .next-img {
+            right: 0px;
+        }
+
+        .img_caption {
+            position: absolute;
+            bottom: 0;
+            width: 800px;
+            left: 50%;
+            margin-left: -400px;
+            text-align: center;
+            opacity: 0.7;
+            font-size: 40px;
+            color: white;
+            background-color: black;
+            z-index: 12;
+        }
+
+        .fav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: right;
+            margin-right: 50px;
+            font-size: 30px;
+            color: white;
+            z-index: 12;
+
+        }
+
+        .moda_img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            margin: auto;
+        }
+
+        .fav .check-box {
+            zoom: 200%;
+        }
+
+        #origin_pic {
+            font-size: 24px;
+            cursor: hand;
+        }
+
+        .origin {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+            margin-left: 80px;
+        }
+
+        .check-box {
+
+            z-index: 100;
+        }
+
+        .close {
+            position: absolute;
+            right: 1%;
+            top: 0;
+            background-color: red;
+            opacity: 0.5;
+            font-size: 40px;
+            color: white;
+            z-index: 110;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            cursor: hand;
+        }
+
+        .down-div {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block left_content %}
+
+     <a href="/upload.html"><i class="fa fa-folder fa-fw"></i>&nbsp;上传页面</a>
+        <div style="text-align: center;margin-top: 20px">
+        <form action="general_view.html/" method="post">
+            <input class="hide" type="text" value="download_all" name="flag">
+            <input class="hide" type="text" name="nid" value="{{ detail_obj.id }}">
+            <input class="hide" type="text" name="download_caption" value="{{ detail_obj.caption }}">
+            <input type="submit" style="font-size: large;" value="下载全部图片" class="download btn btn-success">
+            <input type="checkbox" name="origin_mark2"><span style="font-size: large;">原图</span>
+        </form>
+
+    </div>
+    <div style="text-align: center;margin-top: 20px">
+        <form action="general_view.html/" method="post">
+            <input class="hide" type="text" value="download" name="flag">
+            <input class="hide" id="detail_id" type="text" name="nid" value="{{ detail_obj.id }}">
+            <input class="hide" type="text" name="download_caption" value="{{ detail_obj.caption }}">
+
+            <input type="submit" style="font-size: large;" value="下载收藏图片" class="download btn btn-primary">
+            <input type="checkbox" name="origin_mark"><span style="font-size: large;">原图</span>
+        </form>
+    </div>
+
+
+{% endblock %}
+
+{% block head %}
+    <i class="fa fa-picture-o fa-fw"></i>&nbsp;{{ detail_obj.caption }}
+{% endblock %}
+{% block content %}
+
+    <input class="hide" type="text" value="{{ detail_obj.apartment_id }}" id="classes_id">
+    <div id="moda" class="moda hide">
+        <div id="close" class="close hide">×</div>
+
+        <div id="imgCaption" class="img_caption hide"></div>
+
+        <div id="fav" class="fav hide">
+            {% if user_permission > 5 %} <input class="check-box" name="favorite" type="checkbox" value="">收藏
+
+            {% endif %}
+            <input type="button"  class="btn btn-default" value="原图" id="origin_pic">
+
+
+        </div>
+
+        <div id="pre_button" class="sel-button hide btn btn-default"><</div>
+        <div id="next_button" class="sel-button next-img hide btn btn-default">></div>
+
+        <img id="moda_img" class="moda_img" src="">
+
+    </div>
+    {#    <div id="whole" class="whole "></div>#}
+    <div id="shade" class="shade hide">
+
+    </div>
+    <div class='img-wrap'>
+
+
+        {% for foo in cls_list %}
+
+            <div style="margin-right:20px;display:inline-block;width:276px;">
+                <div style="display: inline-block;width:276px;">
+                    {% if foo.iDevice == 'phone' %}
+                        <img class="littleImg" src="\{{ foo.iurl.phone.url }}" orig-src="\{{ foo.iurl }}"
+                             alex="{{ foo.id }}">
+                    {% else %}
+                        <img class="littleImg" src="\{{ foo.iurl.avatar.url }}" orig-src="\{{ foo.iurl }}"
+                             alex="{{ foo.id }}">
+                    {% endif %}
+                </div>
+                <div style="display: inline-block;width:276px;text-align: center" id="label_img">
+
+                    <form action="general_view.html/" method="post">
+                        {% csrf_token %}
+                        <span class="name-click" style="cursor: hand" href="#">{{ foo.iname }}</span>
+                        <input style="display: none" type="text" name="foo_id" value='{{ foo.id }}'>
+                        <input style="display: none" type="text" name="foo_icaption" value='{{ foo.iCaption_id }}'>
+                        {% if user_permission > 5 %}
+                            {% if foo.iChecked == True %}
+                                <input class="check-box" name="favorite" checked="checked" type="checkbox"
+                                       value='{{ foo.id }}'>收藏
+                            {% else %}
+                                <input class="check-box" name="favorite" type="checkbox" value='{{ foo.id }}'>收藏
+                            {% endif %}
+                            <input type="submit" value="删除" class="btn btn-danger btn-xs">
+                        {% endif %}
+
+                    </form>
+                </div>
+            </div>
+
+
+
+
+        {% endfor %}
+        <div class="ui pagination center aligned menu">
+{% if item_info.has_previous %}
+<a class="item" href="?page={{item_info.previous_page_number}}&nid={{ nid }}">上一页</a>
+{% endif %}
+{% for page_num in item_info.paginator.page_range %}
+	<a class="item" href="?page={{page_num}}&nid={{ nid }}">
+	{{page_num}}
+	</a>
+	{% endfor %}
+	{% if item_info.has_next %}
+	<a class="item" href="?page={{item_info.next_page_number}}&nid={{ nid }}">下一页</a>
+	{% endif %}
+	</div>
+
+
+
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            loadselected()
+            download()
+            showtools()
+            nextbutton()
+            prebutton()
+            showOrigin()
+        })
+        function showOrigin() {
+            $('#origin_pic').click(function () {
+                var img_id = $('.moda_img').attr('alex')
+                $.ajax({
+                    dataType: "json",
+                    url: '/general_view.html/',
+                    type: 'post',
+                    data: {flag: 'origin', nid: img_id},
+                    success: function (data) {
+
+                        window.open(data)
+                        {#                        $('.moda_img').attr('src',data)#}
+
+
+                    }
+                })
+            })
+
+        }
+        function showtools() {
+            $('#moda').hover(function () {
+                $('#pre_button,#next_button,#imgCaption,#fav,#close').removeClass('hide')
+
+            })
+            $('#shade').hover(function () {
+                $('#pre_button,#next_button,#imgCaption,#fav,#close').addClass('hide')
+
+            })
+
+        }
+        function nextbutton() {
+            $('#next_button').click(function () {
+                var this_img = $('#moda_img').attr('alex')
+                var detail_id = $('#detail_id').val()
+                $.ajax({
+                    dataType: "json",
+                    url: '/general_view.html/',
+                    type: 'post',
+                    data: {flag: 'next', nid: this_img, detail_id: detail_id},
+                    success: function (data) {
+                        if (data.valid) {
+                            $('#moda_img').attr('alex', data.alex)
+                            $('#moda_img').prop('src', data.macro_url)
+                            $('.fav .check-box').val(data.alex)
+                            $('#imgCaption').html(data.iname)
+                            if (data.checkee) {
+                                $('.fav .check-box').prop('checked',true)
+                            } else {
+                                $('.fav .check-box').prop('checked',false)
+                            }
+                        } else {
+                            alert('已经是最后一张了')
+                        }
+
+                    }
+                })
+            })
+
+        }
+        function prebutton() {
+            $('#pre_button').click(function () {
+                var this_img = $('#moda_img').attr('alex')
+
+                var detail_id = $('#detail_id').val()
+
+                $.ajax({
+                    dataType: "json",
+                    url: '/general_view.html/',
+                    type: 'post',
+                    data: {flag: 'pre', nid: this_img, detail_id: detail_id},
+                    success: function (data) {
+                        if (data.valid) {
+                            $('#moda_img').attr('alex', data.alex)
+                            $('#moda_img').prop('src', data.macro_url)
+                            $('.fav .check-box').val(data.alex)
+                            $('#imgCaption').html(data.iname)
+                            if (data.checkee) {
+                                $('.fav .check-box').prop('checked',true)
+                            } else {
+                                $('.fav .check-box').prop('checked',false)
+                            }
+                        } else {
+                            alert('已经是第一张了')
+                        }
+
+                    }
+                })
+
+
+            })
+
+        }
+        function loadselected() {
+            var classes_id = $('#classes_id').val()
+
+            switch (classes_id) {
+                case '1':
+                    $('#member').addClass('active')
+                    break;
+                case '2':
+                    $('#moral').addClass('active')
+                    break;
+                case '3':
+                    $('#subject').addClass('active')
+                    break;
+                case '4':
+                    $('#eduAdmin').addClass('active')
+                    break;
+                case '5':
+                    $('#sports').addClass('active')
+                    break;
+                case '6':
+                    $('#affairs').addClass('active')
+                    break;
+            }
+        }
+        function download() {
+            $('.download').click(function () {
+
+                $.ajax({
+                    dataType: "json",
+                    url: '/general_view.html/',
+                    type: 'post',
+                    data: {flag: 'download'},
+                    success: function (data) {
+
+                    }
+                })
+
+
+            })
+        }
+        $(function () {
+
+            $('#label_img .check-box').change(function () {
+                var ischecked = $(this).prop('checked')
+                if (ischecked) {
+                    $('.fav .check-box').prop('checked', 'checked')
+                } else {
+                    $('.fav .check-box').removeAttr('checked')
+                }
+                var nid = $(this).val()
+
+                $.ajax({
+                    dataType: "json",
+                    url: '/general_view.html/',
+                    type: 'post',
+                    data: {ischeck: ischecked, flag: 'check', nid: nid},
+                    success: function (data) {
+                        $('.download-text').val(data)
+                    }
+                })
+            })
+            $('.fav .check-box').change(function () {
+                var ischecked = $(this).prop('checked')
+                var nid = $(this).val()
+                var chose_check = $('.img-wrap input[value="' + nid + '"]')
+                var ifChecked = $('.img-wrap input[value="' + nid + '"]').attr('checked')
+                if (ischecked) {
+                    chose_check.prop('checked',true)
+                } else {
+                    chose_check.prop('checked',false)
+                }
+
+                $.ajax({
+                    dataType: "json",
+                    url: '/general_view.html/',
+                    type: 'post',
+                    data: {ischeck: ischecked, flag: 'check', nid: nid},
+                    success: function (data) {
+                        $('.download-text').val(data)
+                    }
+                })
+            })
+            $('.right-table-div').addClass('hide')
+            $('img').hover(function () {
+                bol = $(this).attr('active');//获取元素的active属性
+                if (bol) {//如果bol存在，直接返回，不执行下面操作
+                    return;
+                }
+                $(this).attr('active', true);//设置属性值，让下次hover不执行下面代码
+
+                $(this).fadeOut(200)
+                $(this).fadeIn(200)
+
+
+            })
+            $('img').click(function () {
+                img_id = $(this).attr('alex')
+
+                {#            orig_addr=$(this).attr('orig-src')#}
+                $('.moda_img').attr('alex', img_id)
+                orig_addr = $(this).attr('src')
+                {#            src为缩略图地址#}
+                $.ajax({
+                    dataType: "json",
+                    url: '/general_view.html/',
+                    type: 'post',
+                    data: {flag: 'name', nid: img_id},
+                    success: function (data) {
+                        $('#imgCaption').removeClass('hide')
+                        $('#imgCaption').html(data)
+
+                    }
+                })
+
+
+                var che_obj = $(this).parent().next().children().find('.check-box').prop('checked')
+
+                if (che_obj) {
+
+                    $('.fav .check-box').prop('checked',true)
+                } else {
+
+                    $('.fav .check-box').prop('checked',false)
+                }
+
+                var innerhtmlsss = $(this).parent().next().children().find('.check-box').val()
+                $('.fav .check-box').val(innerhtmlsss)
+                $('#moda,#shade').removeClass('hide')
+                $('#moda_img').attr('active', true)
+                $('#moda_img').attr('src', orig_addr)
+                {#            $('#moda_img').css('width',675)#}
+            })
+
+            $('#shade,#close').click(function () {
+                $('#moda,#shade').addClass('hide')
+
+
+            })
+        })
+    </script>
+{% endblock %}

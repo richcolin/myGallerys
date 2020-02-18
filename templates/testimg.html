@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% load thumbnail %}  {# 装载easy_thumbnail #}
+<img src="\{{ img.iurl }}">  {# 原图 #}
+<img src="\{{ img.iurl.avatar.url }}">  {# 压缩图 #}
+</body>
+</html>

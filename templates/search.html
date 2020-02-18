@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    最新列表
+{% endblock %}
+{% block css %}
+{% endblock %}
+{% block left_content %}
+    {% if user_permission > 5 %}
+        <a href="/upload.html"><i class="fa fa-folder fa-fw"></i>&nbsp;上传页面</a>
+    {% endif %}
+
+    <div class="right-table-div">
+        <form method="post" action="search.html/">
+            <div class="form-group col-md-11">
+                {% csrf_token %}
+                <div>
+                    <label>选择类别:</label>
+                    <select  name="classes" style="font-size: large;height: 30px">
+                        <option value="10">全部内容</option>
+                        {% for foo in classes_obj %}
+                            <option value="{{ foo.id }}">{{ foo.caption }}</option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+                <div>
+                    <label>起始日期:</label>
+                    <input id="start_line" class="form-control" type="date" name="start_line" style="font-size: large">
+                </div>
+                <div>
+                    <label>截止日期:</label>
+                    <input id="dead_line" class="form-control" type="date" name="dead_line" style="font-size: large">
+                </div>
+
+                <div><label>关键字搜索:</label>
+                    <input type="text" class="form-control" name="keyword" id="keyword" style="height:30px;font-size: large;">
+                </div>
+                <input id="sub" style="font-size: large" class="sub" type="submit" value="搜索">
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block head %}
+    {{ show_tittle }}
+{% endblock %}
+{% block content %}
+    <div class="table-div">
+        <table class="detail-table table table-hover">
+            <tbody>
+            {% for l in member_obj %}
+
+                <tr>
+                    <td><a href="/general_view.html/?nid={{ l.id }}">{{ l.caption }}</a></td>
+                    <td class="date-td">{{ l.idate|date:'Y年m月d日' }}</td>
+                    <td style="width: 200px"><label></label>{{ l.apartment.caption }}</td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {{ str_pager|safe }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('#sub').click(function () {
+            var endtime = $('#dead_line').val();
+            var starttime = $('#start_line').val();
+            var startBoo = new Boolean(starttime);
+            var endBoo = new Boolean(endtime);
+            var start = new Date(starttime.replace("-", "/").replace("-", "/"));
+            var end = new Date(endtime.replace("-", "/").replace("-", "/"));
+            var keyword = $('#keyword').val()
+            if (keyword || endtime || starttime) {
+                if (starttime || endtime) {
+
+                    if (startBoo && endBoo) {
+                        if (end < start) {
+                            alert('结束日期不能小于开始日期！');
+                            return false;
+                        }
+
+                    } else {
+                        alert('请将起始日期和结束日期填写完整')
+                    }
+
+                }
+
+            } else {
+                alert("请输入一个条件")
+                return false;
+            }
+
+        })
+
+
+    </script>
+{% endblock %}
